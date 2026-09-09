@@ -221,7 +221,6 @@ Developed and maintained by **Poornashree J P** ([StudentCoderr](https://github.
 * **GitHub Profile:** [StudentCoderr](https://github.com/StudentCoderr)
 * **Repository:** [college-website-](https://github.com/StudentCoderr/college-website-)
 * **Live Demo:** [college-website-poorna4.vercel.app](https://college-website-poorna4.vercel.app)
-* **Email:** `your.email@domain.com` *(Replace with your email)*
-* **LinkedIn:** `linkedin.com/in/your-profile` *(Optional)*
+* **Email:** `ammupoorna14@gmail.com'
 
 Feel free to reach out, submit an issue, or open a pull request for feedback and suggestions.
