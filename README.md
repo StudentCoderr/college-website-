@@ -205,3 +205,23 @@ http://localhost:8000/
 * **Enhanced Security:** Implement CSRF protection, HTTPS redirect, and advanced input validation.
 
 * **Unit & Integration Testing:** Introduce `pytest` suites to automate test coverage.
+
+---
+
+## Conclusion
+
+The **College Portal Web Application** provides a reliable, centralized, and lightweight administrative system for institutional operations. By combining Role-Based Access Control (RBAC), secure Werkzeug authentication, dynamic notice broadcasting, and document sharing, the platform streamlines digital workflows across Students, Staff, and Administrators. Built on a clean Flask architecture with SQLite and a responsive Bootstrap UI, it serves as an efficient and extensible framework for modern academic portal management.
+
+---
+
+## Contact Information
+
+Developed and maintained by **Poornashree J P** ([StudentCoderr](https://github.com/StudentCoderr)).
+
+* **GitHub Profile:** [StudentCoderr](https://github.com/StudentCoderr)
+* **Repository:** [college-website-](https://github.com/StudentCoderr/college-website-)
+* **Live Demo:** [college-website-poorna4.vercel.app](https://college-website-poorna4.vercel.app)
+* **Email:** `your.email@domain.com` *(Replace with your email)*
+* **LinkedIn:** `linkedin.com/in/your-profile` *(Optional)*
+
+Feel free to reach out, submit an issue, or open a pull request for feedback and suggestions.
