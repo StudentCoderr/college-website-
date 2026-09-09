@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="hero-card p-5 mb-4 rounded-4 shadow-sm">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold text-primary">Welcome to College Portal</h1>
+        <p class="col-md-8 fs-5">A modern digital campus hub for students, staff, and administrators to access notices, events, timetables, notes, and academic updates in one place.</p>
+        <div class="mt-4">
+            <a class="btn btn-primary me-2" href="{{ url_for('login', role='student') }}">Student Login</a>
+            <a class="btn btn-outline-primary me-2" href="{{ url_for('login', role='staff') }}">Staff Login</a>
+            <a class="btn btn-outline-dark" href="{{ url_for('login', role='admin') }}">Admin Login</a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-2">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <h3 class="fw-bold mb-3">Latest Notices and Events</h3>
+                {% for item in announcements %}
+                    <div class="d-flex justify-content-between align-items-start border-bottom py-2">
+                        <div>
+                            <h6 class="fw-semibold mb-1">{{ item.title }}</h6>
+                            <p class="text-muted mb-0">{{ item.content }}</p>
+                            {% if item.event_date %}<small class="text-primary">Event date: {{ item.event_date }}</small>{% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No announcements or events have been published yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 mb-3">
+            <div class="card-body">
+                <h5 class="fw-bold">Quick Resources</h5>
+                <ul class="list-unstyled lh-lg">
+                    <li>📘 <a href="#">Lecture Notes</a></li>
+                    <li>📅 <a href="#">Timetables</a></li>
+                    <li>📢 <a href="#">Campus Notices</a></li>
+                    <li>🎓 <a href="#">Exam Schedules</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body">
+                <h5 class="fw-bold">Portal Highlights</h5>
+                <ul class="list-unstyled lh-lg">
+                    <li>🎓 Student profile storage</li>
+                    <li>👩‍🏫 Staff profile storage</li>
+                    <li>🛡️ Admin-controlled accounts</li>
+                    <li>📦 Notes and timetable uploads</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

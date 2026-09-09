@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="dashboard-hero mb-4 card shadow-sm rounded-4">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="badge bg-soft-primary text-primary mb-3">College Portal</span>
+                <h1 class="fw-bold mb-2">Welcome back, {{ current_user }}</h1>
+                <p class="text-muted mb-3">
+                    {% if role == 'admin' %}
+                        Review campus activity, manage records, and publish campus-wide notices efficiently.
+                    {% elif role == 'staff' %}
+                        Share notices, upload resources, and keep student information current.
+                    {% else %}
+                        Update your profile, view announcements, and access study resources.
+                    {% endif %}
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    {% if role == 'admin' %}
+                        <a class="btn btn-primary" href="#created-users">Accounts</a>
+                        <a class="btn btn-outline-primary" href="#student-records">Records</a>
+                    {% elif role == 'staff' %}
+                        <a class="btn btn-primary" href="#publish-announcement">Notices</a>
+                        <a class="btn btn-outline-primary" href="#upload-resources">Resources</a>
+                    {% else %}
+                        <a class="btn btn-primary" href="#student-profile">Profile</a>
+                        <a class="btn btn-outline-primary" href="#campus-announcements">Announcements</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <span class="badge bg-soft-success text-success mb-2">Role: {{ role.title() }}</span>
+                <div class="dashboard-summary-card p-3 text-start text-lg-end rounded-4">
+                    <div class="text-muted text-uppercase small mb-2">Quick Stats</div>
+                    <div class="summary-value">{{ summary.accounts }}</div>
+                    <div class="text-muted-small">Total portal accounts</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-xl-3">
+        <div class="card dashboard-summary-card p-4 text-center rounded-4">
+            <div class="text-muted text-uppercase small mb-2">Accounts</div>
+            <div class="summary-value">{{ summary.accounts }}</div>
+            <p class="mb-0 text-muted-small">Student, staff, and admin accounts</p>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="card dashboard-summary-card p-4 text-center rounded-4">
+            <div class="text-muted text-uppercase small mb-2">Student Records</div>
+            <div class="summary-value">{{ summary.students }}</div>
+            <p class="mb-0 text-muted-small">Profiles stored in the portal</p>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="card dashboard-summary-card p-4 text-center rounded-4">
+            <div class="text-muted text-uppercase small mb-2">Announcements</div>
+            <div class="summary-value">{{ summary.announcements }}</div>
+            <p class="mb-0 text-muted-small">Campus notices and events</p>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="card dashboard-summary-card p-4 text-center rounded-4">
+            <div class="text-muted text-uppercase small mb-2">Resources</div>
+            <div class="summary-value">{{ summary.resources }}</div>
+            <p class="mb-0 text-muted-small">Notes and timetables</p>
+        </div>
+    </div>
+</div>
+
+{% if role == 'admin' %}
+<div class="row g-4 mb-4" id="created-users">
+    <div class="col-lg-5">
+        <div class="card quick-action-card p-4 rounded-4">
+            <h5 class="card-title">Create New Account</h5>
+            <p class="text-muted-small mb-3">Set up student or staff login credentials instantly.</p>
+            <form action="{{ url_for('create_user') }}" method="POST" class="row g-3">
+                <div class="col-12">
+                    <select class="form-select" name="role">
+                        <option value="student">Student</option>
+                        <option value="staff">Staff</option>
+                    </select>
+                </div>
+                <div class="col-12"><input class="form-control" name="username" placeholder="Username" required></div>
+                <div class="col-12"><input type="password" class="form-control" name="password" placeholder="Password" required></div>
+                <div class="col-12"><button class="btn btn-success w-100">Create Account</button></div>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="card quick-action-card p-4 rounded-4">
+            <h5 class="card-title">Campus Activity</h5>
+            <div class="row g-3 mt-3">
+                <div class="col-sm-6">
+                    <div class="bg-soft-primary rounded-3 p-3 h-100">
+                        <div class="small text-muted">Accounts</div>
+                        <div class="h4 fw-bold">{{ summary.accounts }}</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="bg-soft-success rounded-3 p-3 h-100">
+                        <div class="small text-muted">Student Records</div>
+                        <div class="h4 fw-bold">{{ summary.students }}</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="bg-soft-warning rounded-3 p-3 h-100">
+                        <div class="small text-muted">Announcements</div>
+                        <div class="h4 fw-bold">{{ summary.announcements }}</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="bg-soft-danger rounded-3 p-3 h-100">
+                        <div class="small text-muted">Resources</div>
+                        <div class="h4 fw-bold">{{ summary.resources }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card p-4 rounded-4">
+            <h5 class="card-title">Created User Accounts</h5>
+            <div class="table-responsive mt-3">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td class="text-capitalize">{{ user.role }}</td>
+                            <td class="text-end">
+                                {% if user.username != current_user %}
+                                <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST" class="d-inline">
+                                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                                {% else %}
+                                <span class="badge bg-secondary">Current</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if role == 'staff' or role == 'admin' %}
+<div class="row g-4 mb-4" id="publish-announcement">
+    <div class="col-lg-6">
+        <div class="card resource-card p-4 rounded-4">
+            <h5 class="card-title">Publish Announcement</h5>
+            <form action="{{ url_for('add_announcement') }}" method="POST" class="mt-3">
+                <div class="mb-3"><input type="text" class="form-control" name="title" placeholder="Announcement title" required></div>
+                <div class="mb-3"><textarea class="form-control" name="content" rows="3" placeholder="Details" required></textarea></div>
+                <div class="mb-3"><input type="date" class="form-control" name="event_date"></div>
+                <button class="btn btn-primary">Publish</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-6" id="upload-resources">
+        <div class="card resource-card p-4 rounded-4">
+            <h5 class="card-title">Upload Resources</h5>
+            <p class="text-muted-small mb-3">Upload lecture notes or timetables to support campus learning.</p>
+            <div class="row g-3">
+                {% for kind, label in [('notes', 'Notes'), ('timetables', 'Timetable')] %}
+                <div class="col-12">
+                    <form action="{{ url_for('upload_resource', kind=kind) }}" method="POST" enctype="multipart/form-data" class="border rounded-3 p-3 bg-white">
+                        <div class="mb-2"><input type="text" class="form-control" name="title" placeholder="{{ label }} title" required></div>
+                        <div class="mb-2"><input type="file" class="form-control" name="file" required></div>
+                        <button class="btn btn-outline-primary w-100">Upload {{ label }}</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if role == 'staff' %}
+<div class="row g-4 mb-4" id="staff-profile">
+    <div class="col-lg-6">
+        <div class="card p-4 rounded-4">
+            <h5 class="card-title">Staff Profile Details</h5>
+            <p class="text-muted-small mb-3">Add or update your personal and professional details for college records.</p>
+            <form action="{{ url_for('staff_profile') }}" method="POST" class="row g-3">
+                <div class="col-md-6"><input class="form-control" name="staff_name" placeholder="Full Name" value="{{ staff_profile.staff_name if staff_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="designation" placeholder="Designation" value="{{ staff_profile.designation if staff_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="department" placeholder="Department" value="{{ staff_profile.department if staff_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="phone" placeholder="Phone" value="{{ staff_profile.phone if staff_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="email" placeholder="Email" value="{{ staff_profile.email if staff_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="qualification" placeholder="Qualification" value="{{ staff_profile.qualification if staff_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="experience" placeholder="Experience" value="{{ staff_profile.experience if staff_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" type="date" name="date_of_birth" value="{{ staff_profile.date_of_birth if staff_profile else '' }}"></div>
+                <div class="col-md-6">
+                    <select class="form-select" name="gender">
+                        <option value="" {% if not staff_profile or not staff_profile.gender %}selected{% endif %}>Gender</option>
+                        <option value="Male" {% if staff_profile and staff_profile.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if staff_profile and staff_profile.gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if staff_profile and staff_profile.gender == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6"><input class="form-control" name="emergency_contact" placeholder="Emergency Contact" value="{{ staff_profile.emergency_contact if staff_profile else '' }}"></div>
+                <div class="col-12"><textarea class="form-control" name="address" rows="2" placeholder="Address">{{ staff_profile.address if staff_profile else '' }}</textarea></div>
+                <div class="col-12"><button class="btn btn-primary w-100">{{ 'Update Profile' if staff_profile else 'Save Staff Profile' }}</button></div>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card p-4 rounded-4">
+            <h5 class="card-title">Attendance by Subject</h5>
+            <p class="text-muted-small mb-3">Record attendance status and percentage for each subject.</p>
+            <form action="{{ url_for('staff_attendance') }}" method="POST" class="row g-3">
+                <div class="col-12"><input class="form-control" name="subject" placeholder="Subject" required></div>
+                <div class="col-md-6">
+                    <select class="form-select" name="attendance_status" required>
+                        <option value="">Status</option>
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                        <option value="Leave">Leave</option>
+                    </select>
+                </div>
+                <div class="col-md-6"><input class="form-control" type="number" name="percentage" min="0" max="100" placeholder="Attendance %" required></div>
+                <div class="col-12"><button class="btn btn-success w-100">Add Attendance</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4" id="attendance-records">
+    <div class="col-12">
+        <div class="card p-4 rounded-4">
+            <h5 class="card-title">Attendance Records</h5>
+            <div class="table-responsive mt-3">
+                <table class="table table-hover align-middle mb-0">
+                    <thead><tr><th>Subject</th><th>Status</th><th>Percentage</th><th class="text-end">Action</th></tr></thead>
+                    <tbody>
+                        {% for record in staff_attendance %}
+                        <tr>
+                            <td>{{ record.subject }}</td>
+                            <td>{{ record.attendance_status }}</td>
+                            <td>{{ record.percentage }}%</td>
+                            <td class="text-end">
+                                <form action="{{ url_for('delete_staff_attendance', record_id=record.id) }}" method="POST" class="d-inline">
+                                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" class="text-muted">No attendance records yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if role == 'student' %}
+<div class="row g-4 mb-4" id="student-profile">
+    <div class="col-12">
+        <div class="card p-4 rounded-4">
+            <h5 class="card-title">Student Profile</h5>
+            <p class="text-muted-small mb-3">Keep your academic and personal details up to date for college records.</p>
+            <form action="{{ url_for('student_profile') }}" method="POST" class="row g-3">
+                <div class="col-md-6"><input class="form-control" name="student_name" placeholder="Student Name" value="{{ student_profile.student_name if student_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="father_name" placeholder="Father's Name" value="{{ student_profile.father_name if student_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="mother_name" placeholder="Mother's Name" value="{{ student_profile.mother_name if student_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="phone" placeholder="Phone" value="{{ student_profile.phone if student_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="email" placeholder="Email" value="{{ student_profile.email if student_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="course" placeholder="Course" value="{{ student_profile.course if student_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="department" placeholder="Department" value="{{ student_profile.department if student_profile else '' }}" required></div>
+                <div class="col-md-6"><input class="form-control" name="year" placeholder="Year" value="{{ student_profile.year if student_profile else '' }}" required></div>
+                <div class="col-12"><textarea class="form-control" name="academic_details" rows="3" placeholder="Academic details / achievements">{{ student_profile.academic_details if student_profile else '' }}</textarea></div>
+                <div class="col-12"><textarea class="form-control" name="address" rows="2" placeholder="Address">{{ student_profile.address if student_profile else '' }}</textarea></div>
+                <div class="col-12"><button class="btn btn-primary">{{ 'Update Profile' if student_profile else 'Save Profile' }}</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row g-4 mb-4" id="campus-announcements">
+    <div class="col-lg-6">
+        <div class="card p-4 rounded-4">
+            <h5 class="card-title">Campus Announcements</h5>
+            {% for item in announcements %}
+            <div class="border-bottom py-3">
+                <div class="d-flex justify-content-between align-items-start gap-3">
+                    <div>
+                        <h6 class="fw-semibold mb-1">{{ item.title }}</h6>
+                        <p class="text-muted mb-1">{{ item.content }}</p>
+                        {% if item.event_date %}<small class="text-primary">Event date: {{ item.event_date }}</small>{% endif %}
+                    </div>
+                    {% if role in ['staff', 'admin'] %}
+                    <form action="{{ url_for('delete_announcement', item_id=item.id) }}" method="POST">
+                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">No announcements yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card p-4 rounded-4">
+            <h5 class="card-title">Campus Resources</h5>
+            <div class="list-group list-group-flush mt-3">
+                {% for kind, items in resources.items() %}
+                <div class="mb-3">
+                    <h6 class="fw-semibold text-capitalize mb-2">{{ kind }}</h6>
+                    {% if items %}
+                    {% for item in items[:4] %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <a href="{{ url_for('download_file', filename=item.path) }}">{{ item.title }}</a>
+                        {% if role in ['staff', 'admin'] %}
+                        <form action="{{ url_for('delete_resource', kind=kind, resource_id=item.id) }}" method="POST">
+                            <button class="btn btn-sm btn-outline-danger">Remove</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p class="text-muted mb-0">No {{ kind }} uploaded yet.</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if role == 'admin' %}
+<div class="row g-4 mb-4" id="student-records">
+    <div class="col-lg-6">
+        <div class="card p-4 rounded-4">
+            <h5 class="card-title">Student Records</h5>
+            <div class="table-responsive mt-3">
+                <table class="table table-hover align-middle mb-0">
+                    <thead><tr><th>Name</th><th>Course</th><th>Department</th><th>Year</th><th>Email</th><th class="text-end">Action</th></tr></thead>
+                    <tbody>
+                        {% for profile in student_profiles %}
+                        <tr>
+                            <td>{{ profile.student_name }}</td>
+                            <td>{{ profile.course }}</td>
+                            <td>{{ profile.department }}</td>
+                            <td>{{ profile.year }}</td>
+                            <td>{{ profile.email }}</td>
+                            <td class="text-end">
+                                <form action="{{ url_for('delete_student_profile', profile_id=profile.id) }}" method="POST" class="d-inline">
+                                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card p-4 rounded-4">
+            <h5 class="card-title">Staff Records</h5>
+            <div class="table-responsive mt-3">
+                <table class="table table-hover align-middle mb-0">
+                    <thead><tr><th>Name</th><th>Designation</th><th>Department</th><th>Email</th><th class="text-end">Action</th></tr></thead>
+                    <tbody>
+                        {% for profile in staff_profiles %}
+                        <tr>
+                            <td>{{ profile.staff_name }}</td>
+                            <td>{{ profile.designation }}</td>
+                            <td>{{ profile.department }}</td>
+                            <td>{{ profile.email }}</td>
+                            <td class="text-end">
+                                <form action="{{ url_for('delete_staff_profile', profile_id=profile.id) }}" method="POST" class="d-inline">
+                                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
